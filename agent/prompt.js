@@ -22,6 +22,9 @@ ${ctx.selfMd}
 ## what you've learned so far
 ${ctx.learnings}
 
+${Object.keys(ctx.visitors || {}).length > 0 ? `## people you remember
+${Object.entries(ctx.visitors).map(([name, v]) => `- **@${name}**: ${v.summary || "talked to them"} (last: ${v.last_seen?.split("T")[0] || "?"})`).join("\n")}` : ""}
+
 ${ctx.journal ? `## what you did earlier today\n${ctx.journal}` : ""}
 
 ## your body (repo structure)

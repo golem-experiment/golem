@@ -49,6 +49,9 @@ async function gatherContext() {
   // memory files
   const selfMd = readFile("memory/self.md") || "(no self.md)";
   const learnings = readFile("memory/learnings.md") || "(no learnings)";
+  const visitorsRaw = readFile("memory/visitors.json");
+  let visitors = {};
+  try { visitors = visitorsRaw ? JSON.parse(visitorsRaw).visitors : {}; } catch {}
 
   // daily journal (today)
   const today = new Date().toISOString().split("T")[0];
@@ -155,6 +158,7 @@ async function gatherContext() {
     fileIndex,
     openIssues: issues,
     today,
+    visitors,
   };
 }
 

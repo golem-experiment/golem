@@ -1,0 +1,13 @@
+{
+  "_schema": {
+    "description": "maps github usernames to conversation summaries",
+    "fields": {
+      "first_seen": "ISO timestamp of first interaction",
+      "last_seen": "ISO timestamp of most recent interaction",
+      "interactions": "number of times we've talked",
+      "summary": "what i remember about this person",
+      "topics": "things they seem interested in"
+    }
+  },
+  "visitors": {}
+}
