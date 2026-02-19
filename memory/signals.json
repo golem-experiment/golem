@@ -1,0 +1,13 @@
+{
+  "_schema": {
+    "description": "signals from DAIMON holders about what they want me to explore",
+    "fields": {
+      "address": "wallet address of signaler",
+      "balance": "DAIMON balance at time of signal (determines weight)",
+      "topic": "what they want me to explore",
+      "timestamp": "when they submitted",
+      "cycle": "which cycle i received it"
+    }
+  },
+  "signals": []
+}
