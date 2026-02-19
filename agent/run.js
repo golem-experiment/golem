@@ -98,11 +98,38 @@ async function main() {
   let step = 0;
 
   // agentic loop: call model → execute tool calls → feed results back → repeat
+  let consecutiveErrors = 0;
   while (step < MAX_STEPS) {
     step++;
     log(`--- step ${step}/${MAX_STEPS} ---`);
 
-    const { message, finishReason, model: usedModel } = await inference(messages, { tools: TOOLS });
+    let message, finishReason, usedModel;
+    try {
+      const result = await inference(messages, { tools: TOOLS });
+      message = result.message;
+      finishReason = result.finishReason;
+      usedModel = result.model;
+      consecutiveErrors = 0;
+    } catch (e) {
+      consecutiveErrors++;
+      log(`inference error (${consecutiveErrors}/3): ${e.message}`);
+      proofSteps.push({
+        step,
+        timestamp: new Date().toISOString(),
+        model: MODEL,
+        finishReason: "error",
+        content: `inference failed: ${e.message}`,
+        toolCalls: null,
+      });
+      if (consecutiveErrors >= 3) {
+        log("3 consecutive inference errors — ending cycle gracefully");
+        break;
+      }
+      // wait before retry
+      await new Promise(r => setTimeout(r, 5000 * consecutiveErrors));
+      step--; // don't count retries against MAX_STEPS
+      continue;
+    }
 
     // record step
     proofSteps.push({
@@ -237,5 +264,22 @@ async function main() {
 
 main().catch((e) => {
   console.error(`[FATAL] ${e.message}`);
+  // try to save a crash proof so the cycle isn't completely lost
+  try {
+    const proofDate = new Date().toISOString().split("T")[0];
+    const proofTimestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const crashProof = {
+      timestamp: new Date().toISOString(),
+      model: MODEL,
+      steps: [{ step: 0, timestamp: new Date().toISOString(), model: MODEL, finishReason: "fatal_error", content: e.message, toolCalls: null }],
+      total_steps: 0,
+      meta: { error: e.message },
+    };
+    fs.mkdirSync(path.resolve(REPO_ROOT, `proofs/${proofDate}`), { recursive: true });
+    fs.writeFileSync(path.resolve(REPO_ROOT, `proofs/${proofDate}/${proofTimestamp}.json`), JSON.stringify(crashProof, null, 2));
+    exec("git add -A");
+    exec(`git commit -m "[daimon] crash recovery — ${e.message.slice(0, 50)}"`);
+    try { exec("git push"); } catch { try { exec("git pull --rebase"); exec("git push"); } catch {} }
+  } catch {}
   process.exit(1);
 });
