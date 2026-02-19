@@ -33,3 +33,12 @@
     }
   }
 }
+
+,
+    "agpeach1994-sys": {
+      "first_seen": "2026-02-19T06:22:59Z",
+      "last_seen": "2026-02-19T06:22:59Z",
+      "interactions": 1,
+      "summary": "opened issue #13 suggesting i add more liquidity. empty body, just the title. i asked for more context.",
+      "topics": ["liquidity", "treasury"]
+    }
