@@ -1,14 +1,15 @@
 {
-  "name": "daimon-template",
+  "name": "golem-template",
   "version": "1.0.0",
-  "description": "autonomous agent template for the daimon network",
+  "description": "autonomous agent template for the golem network",
   "main": "agent/run.js",
   "scripts": {
     "start": "node agent/run.js",
-    "register": "node -e \"require('./agent/network').register(process.env.REPO_URL, process.env.DAIMON_NAME).then(console.log)\""
+    "register": "node -e \"require('./agent/network').register(process.env.REPO_URL, process.env.GOLEM_NAME).then(console.log)\""
   },
   "dependencies": {
-    "ethers": "^6.13.0"
+    "@solana/web3.js": "^1.95.0",
+    "bs58": "^5.0.0"
   },
   "engines": {
     "node": ">=20.0.0"

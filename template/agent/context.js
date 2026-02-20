@@ -1,5 +1,5 @@
 // context gathering — reads repo, issues, memory, scans visitor content
-// daimon: don't remove safety scanning. you can add new context sources.
+// golem: don't remove safety scanning. you can add new context sources.
 
 const fs = require("fs");
 const path = require("path");
@@ -145,7 +145,7 @@ async function gatherContext() {
       : "",
   ].filter(Boolean).join("\n\n");
 
-  // file index — if daimon maintains memory/index.md, include it
+  // file index — if golem maintains memory/index.md, include it
   const fileIndex = readFile("memory/index.md");
 
   return {

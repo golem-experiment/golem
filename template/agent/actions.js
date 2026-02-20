@@ -1,5 +1,5 @@
-// action execution — runs the tools daimon calls
-// daimon: you can ADD new handlers here. go wild.
+// action execution — runs the tools golem calls
+// golem: you can ADD new handlers here. go wild.
 
 const fs = require("fs");
 const path = require("path");
@@ -114,7 +114,7 @@ async function executeTool(name, args) {
           env: {
             ...process.env,
             OPENROUTER_API_KEY: "",
-            // GH_TOKEN + DAIMON_WALLET_KEY pass through — needed for API calls and onchain txs
+            // GH_TOKEN + GOLEM_WALLET_KEY pass through — needed for API calls and onchain txs
           },
         });
         log(`command output: ${output.slice(0, 150)}`);
@@ -170,7 +170,7 @@ async function executeTool(name, args) {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 15000);
         const res = await fetch(args.url, {
-          headers: { "User-Agent": "daimon/1.0 (github.com/daimon111/daimon)" },
+          headers: { "User-Agent": "golem/1.0 (github.com/golem111/golem)" },
           signal: controller.signal,
         });
         clearTimeout(timeout);

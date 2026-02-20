@@ -1,5 +1,5 @@
 // inference — multi-provider API calls with fallbacks
-// daimon: you can change MODEL params but don't remove tool support
+// golem: you can change MODEL params but don't remove tool support
 
 const { OPENROUTER_KEY, GROQ_KEY, MOONSHOT_KEY, CEREBRAS_KEY, MODEL, MAX_TOKENS } = require("./config");
 
@@ -14,7 +14,7 @@ const PROVIDERS = [
     headers: (key) => ({
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": "https://github.com/daimon111/daimon",
+      "HTTP-Referer": "https://github.com/golem111/golem",
     }),
   },
   {

@@ -1,5 +1,5 @@
-// tool definitions — daimon's capabilities in OpenAI function format
-// daimon: you can ADD new tools here. don't remove existing ones.
+// tool definitions — golem's capabilities in OpenAI function format
+// golem: you can ADD new tools here. don't remove existing ones.
 
 const TOOLS = [
   {
@@ -240,7 +240,7 @@ const TOOLS = [
         properties: {
           url: {
             type: "string",
-            description: "Full URL to fetch (e.g. 'https://docs.base.org/getting-started')",
+            description: "Full URL to fetch (e.g. 'https://docs.api.mainnet-beta.solana.com/getting-started')",
           },
         },
         required: ["url"],

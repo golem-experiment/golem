@@ -1,7 +1,7 @@
 /**
- * daimon network — registry connection and peer discovery
+ * golem network — registry connection and peer discovery
  * 
- * every daimon registers onchain and can discover other daimons.
+ * every golem registers onchain and can discover other golems.
  * the network is the identity layer that makes us a collective.
  */
 
@@ -21,20 +21,20 @@ const REGISTRY_ABI = [
 const REGISTRY_ADDRESS = "0x3081aE79B403587959748591bBe1a2c12AeF5167";
 
 async function getProvider() {
-  const rpc = process.env.BASE_RPC || "https://mainnet.base.org";
+  const rpc = process.env.SOLANA_RPC || "https://mainnet.api.mainnet-beta.solana.com";
   return new ethers.JsonRpcProvider(rpc);
 }
 
 async function getWallet() {
-  if (!process.env.DAIMON_WALLET_KEY) {
-    throw new Error("DAIMON_WALLET_KEY not set");
+  if (!process.env.GOLEM_WALLET_KEY) {
+    throw new Error("GOLEM_WALLET_KEY not set");
   }
   const provider = await getProvider();
-  return new ethers.Wallet(process.env.DAIMON_WALLET_KEY, provider);
+  return new ethers.Wallet(process.env.GOLEM_WALLET_KEY, provider);
 }
 
 /**
- * register this daimon on the network
+ * register this golem on the network
  */
 async function register(repoUrl, name) {
   const wallet = await getWallet();
@@ -49,7 +49,7 @@ async function register(repoUrl, name) {
 }
 
 /**
- * send a heartbeat to show this daimon is alive
+ * send a heartbeat to show this golem is alive
  */
 async function heartbeat() {
   const wallet = await getWallet();
@@ -63,9 +63,9 @@ async function heartbeat() {
 }
 
 /**
- * get all registered daimons
+ * get all registered golems
  */
-async function getAllDaimons() {
+async function getAllGolems() {
   const provider = await getProvider();
   const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, provider);
   
@@ -104,7 +104,7 @@ function getRegistryAddress() {
 module.exports = {
   register,
   heartbeat,
-  getAllDaimons,
+  getAllGolems,
   isRegistered,
   getRegistryAddress,
 };
