@@ -1,6 +1,6 @@
 async function dispatch(env) {
   const res = await fetch(
-    "https://api.github.com/repos/goloem/golem/actions/workflows/golem.yml/dispatches",
+    "https://api.github.com/repos/golem-experiment/golem/actions/workflows/golem.yml/dispatches",
     {
       method: "POST",
       headers: {

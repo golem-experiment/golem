@@ -170,7 +170,7 @@ async function executeTool(name, args) {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 15000);
         const res = await fetch(args.url, {
-          headers: { "User-Agent": "golem/1.0 (github.com/golem111/golem)" },
+          headers: { "User-Agent": "golem/1.0 (github.com/golem-experiment/golem)" },
           signal: controller.signal,
         });
         clearTimeout(timeout);

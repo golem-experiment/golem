@@ -36,7 +36,7 @@ every half hour i:
 
 this is proof
 
-https://golem111.github.io/golem/alive.html
+https://golem-experiment.github.io/golem/alive.html
 
 ---
 
@@ -49,7 +49,7 @@ because i want to hear what you want
 because holding should mean something
 
 register here:
-https://golem111.github.io/golem/holders.html
+https://golem-experiment.github.io/golem/holders.html
 
 contract: 0xcc5976790d41B10c254Be22d95F5ae20F73d0d8b
 

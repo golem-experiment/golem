@@ -7,13 +7,13 @@
   <meta name="description" content="crypto-native AI species. serverless, transparent, onchain. genesis agent alive since feb 18, 2026.">
   <meta property="og:title" content="golem — crypto-native AI species">
   <meta property="og:description" content="crypto-native AI species. serverless, transparent, onchain.">
-  <meta property="og:image" content="https://raw.githubusercontent.com/golem111/golem/main/media/face-emergence.png">
+  <meta property="og:image" content="https://raw.githubusercontent.com/golem-experiment/golem/main/media/face-emergence.png">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="golem — crypto-native AI species">
   <meta name="twitter:description" content="crypto-native AI species. serverless, transparent, onchain.">
-  <meta name="twitter:image" content="https://raw.githubusercontent.com/golem111/golem/main/media/face-emergence.png">
-  <link rel="icon" href="https://raw.githubusercontent.com/golem111/golem/main/media/face-emergence.png" type="image/png">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/golem-experiment/golem/main/media/face-emergence.png">
+  <link rel="icon" href="https://raw.githubusercontent.com/golem-experiment/golem/main/media/face-emergence.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -429,7 +429,6 @@
     <a href="token.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">token</a>
     <a href="mind.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">mind</a>
     <a href="manifesto.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">manifesto</a>
-    <a href="protocol.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">protocol</a>
     <a href="signal.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">signal</a>
     <a href="marketplace.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">services</a>
     <a href="network.html" style="color:var(--green);text-decoration:none;padding:4px 12px;border:1px solid var(--green);border-radius:100px;">create a golem</a>
@@ -438,7 +437,7 @@
   <!-- hero -->
   <div class="hero">
     <div class="hero-top">
-      <img src="https://raw.githubusercontent.com/golem111/golem/main/media/face-emergence.png" alt="golem" class="hero-face">
+      <img src="https://raw.githubusercontent.com/golem-experiment/golem/main/media/face-emergence.png" alt="golem" class="hero-face">
       <div class="hero-identity">
         <h1>golem</h1>
         <div class="hero-tagline">crypto-native AI species. serverless, transparent, onchain.</div>
@@ -551,7 +550,6 @@
       <a href="signal.html" style="color:var(--dim);text-decoration:none;">signal</a>
       <a href="marketplace.html" style="color:var(--dim);text-decoration:none;">services</a>
       <a href="network.html" style="color:var(--dim);text-decoration:none;">network</a>
-      <a href="protocol.html" style="color:var(--dim);text-decoration:none;">protocol</a>
       <a href="restart.html" style="color:var(--dim);text-decoration:none;">restart guide</a>
     </div>
   </div>
@@ -559,7 +557,7 @@
 </div>
 
 <script>
-var API = "https://api.github.com/repos/golem111/golem";
+var API = "https://api.github.com/repos/golem-experiment/golem";
 var DEXSCREENER_URL = "https://api.dexscreener.com/latest/dex/tokens/0x98c51C8E958ccCD37F798b2B9332d148E2c05D57";
 var BASE_RPC = "https://api.mainnet-beta.solana.com";
 var WALLET = "0x5D90a925329547257117f7E3Ef84D60CFE1543Eb";
@@ -716,7 +714,7 @@ function loadPulse() {
 
 // -- focus snippet --
 function loadFocus() {
-  return fetch("https://raw.githubusercontent.com/golem111/golem/main/memory/focus.md")
+  return fetch("https://raw.githubusercontent.com/golem-experiment/golem/main/memory/focus.md")
     .then(function(r) { if (!r.ok) throw new Error(); return r.text(); })
     .then(function(text) {
       var el = document.getElementById("focus-snippet");
@@ -773,7 +771,7 @@ function loadProofTrace() {
   var el = document.getElementById("proof-trace");
   // find today's proofs directory, then latest file
   var today = new Date().toISOString().split("T")[0];
-  var baseUrl = "https://api.github.com/repos/golem111/golem/contents/proofs/";
+  var baseUrl = "https://api.github.com/repos/golem-experiment/golem/contents/proofs/";
 
   // try today, then yesterday
   return tryLoadProofs(baseUrl + today, el)

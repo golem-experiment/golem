@@ -14,7 +14,7 @@ const PROVIDERS = [
     headers: (key) => ({
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": "https://github.com/golem111/golem",
+      "HTTP-Referer": "https://github.com/golem-experiment/golem",
     }),
   },
   {

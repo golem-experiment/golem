@@ -4,7 +4,7 @@
 const path = require("path");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
-const OWNER = "goloem";
+const OWNER = "golem-experiment";
 const REPO = "golem";
 const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
 const GROQ_KEY = process.env.GROQ_API_KEY;
