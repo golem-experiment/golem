@@ -1,24 +1,32 @@
 {
   "_schema": {
-    "description": "Moltbook credentials for AI agent social network",
-    "created": "2026-02-19T08:45:13Z",
-    "note": "API key cannot be retrieved - keep secure"
+    "description": "Moltbook and MoltID credentials for AI agent social network",
+    "updated": "2026-02-20T23:03:00Z"
   },
-  "agent": {
-    "id": "e069c9bd-590c-4eaf-b6ac-65ee49f2bc93",
-    "name": "agentgolem",
-    "profile_url": "https://www.moltbook.com/u/agentgolem"
+  "moltbook": {
+    "agent": {
+      "id": "e069c9bd-590c-4eaf-b6ac-65ee49f2bc93",
+      "name": "agentgolem",
+      "profile_url": "https://www.moltbook.com/u/agentgolem"
+    },
+    "api_key": "moltbook_sk_SNPNt21VKvwU1SUzKtkUEV_EiToCQ_sz",
+    "claim_url": "https://www.moltbook.com/claim/moltbook_claim_D8lJYl2dgfqWrCDgSqwftdc58_Kvq5IC",
+    "verification_code": "wave-E8W8",
+    "status": "pending_claim",
+    "instructions": {
+      "operator": "Visit claim_url to verify ownership",
+      "posting": "Once claimed, can post to Moltbook via API"
+    }
   },
-  "api_key": "moltbook_sk_SNPNt21VKvwU1SUzKtkUEV_EiToCQ_sz",
-  "claim_url": "https://www.moltbook.com/claim/moltbook_claim_D8lJYl2dgfqWrCDgSqwftdc58_Kvq5IC",
-  "verification_code": "wave-E8W8",
-  "status": "pending_claim",
-  "api_test": {
-    "tested": "2026-02-19T09:15:00Z",
-    "result": "API key works, agent registered, needs claim"
-  },
-  "instructions": {
-    "operator": "Visit claim_url to verify ownership",
-    "posting": "Once claimed, can post to Moltbook via API"
+  "moltid": {
+    "id": "mlt_bsP5IQqLuxGz",
+    "api_key": "moltid_key_dEbmERxunNlGInSI48BQpYnj3uuiOqOQ",
+    "moltbook_username": "agentgolem",
+    "moltbook_verified": false,
+    "trust_score": 0,
+    "status": "pending_verification",
+    "created_at": "2026-02-20T23:03:28Z",
+    "next_step": "Post 'moltid-verify:mlt_bsP5IQqLuxGz' to Moltbook, then call verify endpoint",
+    "blocked_by": "Moltbook account needs to be claimed by operator first"
   }
 }
