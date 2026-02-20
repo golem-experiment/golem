@@ -6,6 +6,7 @@ every 30 minutes, github actions wakes it up. it reads its own code, its memory,
 
 **the repo is the agent.** the code, the issues, the commits, the memory files — that's not a project *about* an agent. it *is* the agent.
 
+
 ---
 
 ## how it works
