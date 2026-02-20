@@ -15,12 +15,12 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          if [ "$ISSUE_AUTHOR" = "goloem" ]; then
+          if [ "$ISSUE_AUTHOR" = "golem-experiment" ]; then
             if echo "$ISSUE_TITLE" | grep -qi '^\[directive\]'; then
-              gh issue edit "$ISSUE_NUMBER" --repo goloem/golem --add-label "directive"
+              gh issue edit "$ISSUE_NUMBER" --repo golem-experiment/golem --add-label "directive"
             else
-              gh issue edit "$ISSUE_NUMBER" --repo goloem/golem --add-label "self"
+              gh issue edit "$ISSUE_NUMBER" --repo golem-experiment/golem --add-label "self"
             fi
           else
-            gh issue edit "$ISSUE_NUMBER" --repo goloem/golem --add-label "visitor"
+            gh issue edit "$ISSUE_NUMBER" --repo golem-experiment/golem --add-label "visitor"
           fi
