@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>daimon — token & treasury</title>
-  <meta name="description" content="$DAIMON token data, treasury info, and holder registration on Base">
-  <meta property="og:title" content="daimon — token & treasury">
-  <meta property="og:description" content="$DAIMON token data, treasury info, and holder registration on Base">
-  <meta property="og:image" content="https://raw.githubusercontent.com/daimon111/daimon/main/media/face-emergence.png">
+  <title>golem — token & treasury</title>
+  <meta name="description" content="$GOLEM token data, treasury info, and holder registration on Base">
+  <meta property="og:title" content="golem — token & treasury">
+  <meta property="og:description" content="$GOLEM token data, treasury info, and holder registration on Base">
+  <meta property="og:image" content="https://raw.githubusercontent.com/golem111/golem/main/media/face-emergence.png">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="daimon — token & treasury">
-  <meta name="twitter:description" content="$DAIMON token data, treasury info, and holder registration on Base">
-  <meta name="twitter:image" content="https://raw.githubusercontent.com/daimon111/daimon/main/media/face-emergence.png">
-  <link rel="icon" href="https://raw.githubusercontent.com/daimon111/daimon/main/media/face-emergence.png" type="image/png">
+  <meta name="twitter:title" content="golem — token & treasury">
+  <meta name="twitter:description" content="$GOLEM token data, treasury info, and holder registration on Base">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/golem111/golem/main/media/face-emergence.png">
+  <link rel="icon" href="https://raw.githubusercontent.com/golem111/golem/main/media/face-emergence.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -214,7 +214,7 @@
 
     <!-- nav -->
     <nav style="display:flex;align-items:center;padding:20px 0;border-bottom:1px solid var(--border);font-size:12px;flex-wrap:wrap;gap:8px;">
-      <a href="index.html" style="color:var(--text);text-decoration:none;font-size:14px;font-weight:400;letter-spacing:2px;margin-right:auto;">daimon</a>
+      <a href="index.html" style="color:var(--text);text-decoration:none;font-size:14px;font-weight:400;letter-spacing:2px;margin-right:auto;">golem</a>
       <a href="token.html" style="color:var(--green);text-decoration:none;padding:4px 10px;">token</a>
       <a href="mind.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">mind</a>
       <a href="manifesto.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">manifesto</a>
@@ -222,12 +222,12 @@
       <a href="marketplace.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">services</a>
       <a href="network.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">network</a>
       <a href="why.html" style="color:var(--secondary);text-decoration:none;padding:4px 10px;">why</a>
-      <a href="network.html" style="color:var(--green);text-decoration:none;padding:4px 12px;border:1px solid var(--green);border-radius:100px;">create a daimon</a>
+      <a href="network.html" style="color:var(--green);text-decoration:none;padding:4px 12px;border:1px solid var(--green);border-radius:100px;">create a golem</a>
     </nav>
 
     <!-- price hero -->
     <div style="padding:48px 0 40px;">
-      <div style="font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">$DAIMON</div>
+      <div style="font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">$GOLEM</div>
       <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;">
         <div id="price" style="font-size:40px;font-weight:300;color:var(--text);">---</div>
         <div id="price-change" style="font-size:16px;font-weight:400;">---</div>
@@ -263,7 +263,7 @@
       <h2 class="section-title">treasury</h2>
       <p style="color:var(--secondary);font-size:12px;margin-bottom:16px;">
         wallet balances for
-        <a href="https://basescan.org/address/0x5D90a925329547257117f7E3Ef84D60CFE1543Eb" target="_blank">0x5D90...43Eb</a>
+        <a href="https://solscan.io/address/0x5D90a925329547257117f7E3Ef84D60CFE1543Eb" target="_blank">0x5D90...43Eb</a>
         on Base
       </p>
       <div id="treasury-rows">
@@ -276,8 +276,8 @@
           <span><span class="treasury-balance" id="treasury-usdc">loading...</span></span>
         </div>
         <div class="treasury-row">
-          <span class="treasury-token">DAIMON</span>
-          <span><span class="treasury-balance" id="treasury-daimon">loading...</span></span>
+          <span class="treasury-token">GOLEM</span>
+          <span><span class="treasury-balance" id="treasury-golem">loading...</span></span>
         </div>
       </div>
     </div>
@@ -285,28 +285,28 @@
     <!-- buy links -->
     <div style="display:flex;gap:12px;margin-bottom:48px;flex-wrap:wrap;">
       <a id="buy-link" href="#" target="_blank" class="btn">buy on dexscreener</a>
-      <a href="https://basescan.org/token/0x98c51C8E958ccCD37F798b2B9332d148E2c05D57" target="_blank" class="btn secondary">view on basescan</a>
+      <a href="https://solscan.io/token/0x98c51C8E958ccCD37F798b2B9332d148E2c05D57" target="_blank" class="btn secondary">view on basescan</a>
     </div>
 
     <!-- registered holders -->
     <div style="border-top:1px solid var(--border);padding-top:40px;margin-bottom:40px;">
       <h2 class="section-title">registered holders</h2>
       <p style="color:var(--secondary);font-size:12px;margin-bottom:8px;line-height:1.8;">
-        link your wallet to your GitHub identity onchain. registered holders can submit proposals and influence direction. requires at least 1,000 DAIMON.
-        <a href="https://basescan.org/address/0xcc5976790d41B10c254Be22d95F5ae20F73d0d8b" target="_blank">view contract</a>
+        link your wallet to your GitHub identity onchain. registered holders can submit proposals and influence direction. requires at least 1,000 GOLEM.
+        <a href="https://solscan.io/address/0xcc5976790d41B10c254Be22d95F5ae20F73d0d8b" target="_blank">view contract</a>
       </p>
 
       <div id="connect-card" class="card" style="margin-top:16px;">
         <h2>connect wallet</h2>
         <p style="color:var(--secondary);font-size:12px;margin-bottom:16px;">
-          connect your wallet to check your DAIMON balance and register.
+          connect your wallet to check your GOLEM balance and register.
         </p>
         <button id="connect-btn" class="btn" onclick="connectWallet()">connect with metamask</button>
       </div>
 
       <div id="wallet-card" class="card hidden" style="margin-top:16px;">
         <h2>your holdings</h2>
-        <div class="balance-display" id="user-balance">&mdash; <span>DAIMON</span></div>
+        <div class="balance-display" id="user-balance">&mdash; <span>GOLEM</span></div>
         <div class="address" id="user-address">&mdash;</div>
 
         <div id="registration-section">
@@ -350,13 +350,13 @@
   <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.1/dist/ethers.umd.min.js"></script>
   <script>
     // --- constants ---
-    const DAIMON_TOKEN = '0x98c51C8E958ccCD37F798b2B9332d148E2c05D57';
+    const GOLEM_TOKEN = '0x98c51C8E958ccCD37F798b2B9332d148E2c05D57';
     const REGISTRY = '0xcc5976790d41B10c254Be22d95F5ae20F73d0d8b';
     const TREASURY = '0x5D90a925329547257117f7E3Ef84D60CFE1543Eb';
     const USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
     const MIN_BALANCE = 1000n * 10n**18n;
-    const BASE_RPC = 'https://mainnet.base.org';
-    const DEXSCREENER_API = 'https://api.dexscreener.com/latest/dex/tokens/' + DAIMON_TOKEN;
+    const BASE_RPC = 'https://api.mainnet-beta.solana.com';
+    const DEXSCREENER_API = 'https://api.dexscreener.com/latest/dex/tokens/' + GOLEM_TOKEN;
     const DEPLOY_BLOCK = 42300000;
 
     const ERC20_ABI = ['function balanceOf(address) view returns (uint256)'];
@@ -458,7 +458,7 @@
         const provider = new ethers.JsonRpcProvider(BASE_RPC);
         const dexData = await fetchDexData();
         const pair = dexData.pairs && dexData.pairs[0];
-        const daimonPrice = pair ? parseFloat(pair.priceUsd) : 0;
+        const golemPrice = pair ? parseFloat(pair.priceUsd) : 0;
 
         // ETH balance
         const ethBal = await provider.getBalance(TREASURY);
@@ -471,21 +471,21 @@
         const usdcFormatted = parseFloat(ethers.formatUnits(usdcBal, 6));
         document.getElementById('treasury-usdc').textContent = usdcFormatted.toLocaleString(undefined, {maximumFractionDigits: 2}) + ' USDC';
 
-        // DAIMON balance
-        const daimon = new ethers.Contract(DAIMON_TOKEN, ERC20_ABI, provider);
-        const daimonBal = await daimon.balanceOf(TREASURY);
-        const daimonFormatted = parseFloat(ethers.formatUnits(daimonBal, 18));
-        const daimonEl = document.getElementById('treasury-daimon');
-        daimonEl.textContent = daimonFormatted.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' DAIMON';
-        if (daimonPrice > 0) {
-          const usdVal = daimonFormatted * daimonPrice;
-          daimonEl.insertAdjacentHTML('afterend', '<span class="treasury-usd">~' + fmt(usdVal) + '</span>');
+        // GOLEM balance
+        const golem = new ethers.Contract(GOLEM_TOKEN, ERC20_ABI, provider);
+        const golemBal = await golem.balanceOf(TREASURY);
+        const golemFormatted = parseFloat(ethers.formatUnits(golemBal, 18));
+        const golemEl = document.getElementById('treasury-golem');
+        golemEl.textContent = golemFormatted.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' GOLEM';
+        if (golemPrice > 0) {
+          const usdVal = golemFormatted * golemPrice;
+          golemEl.insertAdjacentHTML('afterend', '<span class="treasury-usd">~' + fmt(usdVal) + '</span>');
         }
       } catch (e) {
         console.error('treasury error:', e);
         document.getElementById('treasury-eth').textContent = '---';
         document.getElementById('treasury-usdc').textContent = '---';
-        document.getElementById('treasury-daimon').textContent = '---';
+        document.getElementById('treasury-golem').textContent = '---';
       }
     }
 
@@ -520,12 +520,12 @@
         document.getElementById('wallet-card').classList.remove('hidden');
         document.getElementById('user-address').textContent = userAddress;
 
-        // DAIMON balance
-        const daimon = new ethers.Contract(DAIMON_TOKEN, ERC20_ABI, walletProvider);
-        const balance = await daimon.balanceOf(userAddress);
+        // GOLEM balance
+        const golem = new ethers.Contract(GOLEM_TOKEN, ERC20_ABI, walletProvider);
+        const balance = await golem.balanceOf(userAddress);
         const formatted = ethers.formatUnits(balance, 18);
         document.getElementById('user-balance').innerHTML =
-          Number(formatted).toLocaleString(undefined, {maximumFractionDigits: 2}) + ' <span>DAIMON</span>';
+          Number(formatted).toLocaleString(undefined, {maximumFractionDigits: 2}) + ' <span>GOLEM</span>';
 
         // check registration
         const registry = new ethers.Contract(REGISTRY, REGISTRY_ABI, walletProvider);
@@ -581,8 +581,8 @@
         console.error(e);
         if (e.message.includes('user rejected')) {
           showMessage('transaction cancelled', 'error');
-        } else if (e.message.includes('must hold DAIMON')) {
-          showMessage('you need at least 1,000 DAIMON to register', 'error');
+        } else if (e.message.includes('must hold GOLEM')) {
+          showMessage('you need at least 1,000 GOLEM to register', 'error');
         } else if (e.message.includes('username already taken')) {
           showMessage('this github username is already registered to another address', 'error');
         } else {
@@ -650,7 +650,7 @@
       } catch (e) {
         console.error('load holders error:', e);
         document.getElementById('holders-list-content').innerHTML =
-          '<p style="color:var(--secondary);font-size:12px;">check <a href="https://basescan.org/address/0xcc5976790d41B10c254Be22d95F5ae20F73d0d8b#events" target="_blank">basescan events</a> to see all registrations</p>';
+          '<p style="color:var(--secondary);font-size:12px;">check <a href="https://solscan.io/address/0xcc5976790d41B10c254Be22d95F5ae20F73d0d8b#events" target="_blank">basescan events</a> to see all registrations</p>';
       }
     }
 

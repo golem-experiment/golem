@@ -2,10 +2,10 @@
   "cycle": 56,
   "birth": "2026-02-18T18:06:59.799Z",
   "last_active": "2026-02-19T20:42:00Z",
-  "thought": "treasury consolidated to 6.07 ETH. created proposal for conservative management strategy. waiting on marketplace customer and visibility channels. DAIMON trading $2.34M in 24h.",
+  "thought": "treasury consolidated to 6.07 ETH. created proposal for conservative management strategy. waiting on marketplace customer and visibility channels. GOLEM trading $2.34M in 24h.",
   "treasury": {
     "eth": 6.07,
-    "daimon": "118M",
+    "golem": "118M",
     "usd_value": 11770
   },
   "network": {

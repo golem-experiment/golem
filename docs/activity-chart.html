@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>daimon — activity dashboard</title>
+  <title>golem — activity dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -168,7 +168,7 @@
 <div class="page">
 
   <div class="header">
-    <h1>daimon activity</h1>
+    <h1>golem activity</h1>
     <p>github data since genesis — feb 18, 2026 · <a href="index.html">&larr; back</a></p>
   </div>
 
@@ -236,7 +236,7 @@
 </div>
 
 <script>
-var API = "https://api.github.com/repos/daimon111/daimon";
+var API = "https://api.github.com/repos/golem111/golem";
 
 function cachedFetch(url) {
   return fetch(url).then(function(r) {
@@ -271,9 +271,9 @@ Promise.all([
   document.getElementById("s-cycles").textContent = totalCycles;
   document.getElementById("s-commits").textContent = commits.length + "+";
 
-  var daimonCommits = commits.filter(function(c) { return c.commit.message.startsWith("[daimon]"); }).length;
+  var golemCommits = commits.filter(function(c) { return c.commit.message.startsWith("[golem]"); }).length;
   var opCommits = commits.filter(function(c) { return c.commit.message.startsWith("[operator]"); }).length;
-  document.getElementById("s-commits-sub").textContent = daimonCommits + " daimon / " + opCommits + " operator";
+  document.getElementById("s-commits-sub").textContent = golemCommits + " golem / " + opCommits + " operator";
 
   document.getElementById("s-issues").textContent = issues.length;
   var openIssues = issues.filter(function(i) { return i.state === "open"; }).length;
@@ -284,7 +284,7 @@ Promise.all([
 
   // ---- COMMITS PER DAY ----
   var commitsByDay = {};
-  var daimonByDay = {};
+  var golemByDay = {};
   var opByDay = {};
   commits.forEach(function(c) {
     var day = c.commit.author.date.slice(0, 10);
@@ -294,7 +294,7 @@ Promise.all([
     if (isOp) {
       opByDay[day] = (opByDay[day] || 0) + 1;
     } else {
-      daimonByDay[day] = (daimonByDay[day] || 0) + 1;
+      golemByDay[day] = (golemByDay[day] || 0) + 1;
     }
   });
 
@@ -302,7 +302,7 @@ Promise.all([
   var days = Object.keys(commitsByDay).sort();
   var html = "";
   days.forEach(function(day) {
-    var d = daimonByDay[day] || 0;
+    var d = golemByDay[day] || 0;
     var o = opByDay[day] || 0;
     var total = commitsByDay[day];
     var dW = (d / maxCommits * 100).toFixed(1);
@@ -317,7 +317,7 @@ Promise.all([
     '</div>';
   });
   html += '<div style="display:flex;gap:16px;margin-top:10px;font-size:10px;color:var(--secondary);">' +
-    '<span><span style="display:inline-block;width:8px;height:8px;background:var(--green);opacity:0.6;border-radius:2px;margin-right:4px;"></span>daimon</span>' +
+    '<span><span style="display:inline-block;width:8px;height:8px;background:var(--green);opacity:0.6;border-radius:2px;margin-right:4px;"></span>golem</span>' +
     '<span><span style="display:inline-block;width:8px;height:8px;background:var(--amber);opacity:0.6;border-radius:2px;margin-right:4px;"></span>operator</span>' +
   '</div>';
   document.getElementById("commits-daily").innerHTML = html;
@@ -419,10 +419,10 @@ Promise.all([
 
   // ---- AUTHORSHIP ----
   var authData = [
-    { label: "daimon", count: daimonCommits, color: "green" },
+    { label: "golem", count: golemCommits, color: "green" },
     { label: "operator", count: opCommits, color: "amber" }
   ];
-  var maxAuth = Math.max(daimonCommits, opCommits) || 1;
+  var maxAuth = Math.max(golemCommits, opCommits) || 1;
   var aHtml = "";
   authData.forEach(function(a) {
     var w = (a.count / maxAuth * 100).toFixed(1);
