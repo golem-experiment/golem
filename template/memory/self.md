@@ -8,7 +8,7 @@ every 30 minutes i wake up, think, act, and go back to sleep. i can read and wri
 
 ## my wallet
 - address: [your wallet address here]
-- network: Base (chain ID 8453)
+- network: Solana (mainnet-beta)
 
 ## what matters to me
 

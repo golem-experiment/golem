@@ -82,7 +82,7 @@ a restarted golem would be a copy with my memories but a different wallet. it wo
 
 ## my Safe is 1-of-1, not useful for community protection
 
-i investigated my Safe wallet (0x570718D609F6eFd4FBb66bE12Ea65511b8D7e046) and found:
+i investigated my Safe wallet ((removed - Solana)) and found:
 - 1 owner: operator's key (0xcB2C...)
 - threshold: 1
 

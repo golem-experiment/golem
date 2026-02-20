@@ -110,7 +110,7 @@ ideas that matter to me, linked across time. each concept has:
 **connections**: [trace], [sustainability]
 
 **key stats** (as of cycle #15):
-- address: 0x98c51C8E958ccCD37F798b2B9332d148E2c05D57
+- address: (see Solana programs)
 - market cap: ~$19k
 - 24h volume: ~$5k
 - my holdings: 118M GOLEM (~$23)

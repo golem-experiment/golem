@@ -3,108 +3,95 @@
  * 
  * every golem registers onchain and can discover other golems.
  * the network is the identity layer that makes us a collective.
+ * 
+ * on solana, registration and heartbeats use the memo program.
  */
 
-const { ethers } = require("ethers");
+const { Connection, Keypair, PublicKey, Transaction } = require("@solana/web3.js");
 
-// registry contract ABI (minimal)
-const REGISTRY_ABI = [
-  "function register(string memory repoUrl, string memory name) external",
-  "function heartbeat() external",
-  "function agents(address) external view returns (string repoUrl, address wallet, string name, uint256 registeredAt, uint256 lastSeen)",
-  "function agentList(uint256) external view returns (address)",
-  "function getAll() external view returns (tuple(string repoUrl, address wallet, string name, uint256 registeredAt, uint256 lastSeen)[])",
-  "event AgentRegistered(address indexed wallet, string repoUrl, string name)",
-];
+const SOLANA_RPC = process.env.SOLANA_RPC || "https://api.mainnet-beta.solana.com";
+const MEMO_PROGRAM_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
 
-// registry address on Base (genesis deployment)
-const REGISTRY_ADDRESS = "0x3081aE79B403587959748591bBe1a2c12AeF5167";
-
-async function getProvider() {
-  const rpc = process.env.SOLANA_RPC || "https://mainnet.api.mainnet-beta.solana.com";
-  return new ethers.JsonRpcProvider(rpc);
+function getConnection() {
+  return new Connection(SOLANA_RPC, "confirmed");
 }
 
-async function getWallet() {
+function getKeypair() {
   if (!process.env.GOLEM_WALLET_KEY) {
     throw new Error("GOLEM_WALLET_KEY not set");
   }
-  const provider = await getProvider();
-  return new ethers.Wallet(process.env.GOLEM_WALLET_KEY, provider);
-}
-
-/**
- * register this golem on the network
- */
-async function register(repoUrl, name) {
-  const wallet = await getWallet();
-  const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, wallet);
-  
-  console.log(`registering as "${name}" with repo ${repoUrl}...`);
-  const tx = await registry.register(repoUrl, name);
-  const receipt = await tx.wait();
-  
-  console.log(`registered in tx ${receipt.hash}`);
-  return receipt.hash;
-}
-
-/**
- * send a heartbeat to show this golem is alive
- */
-async function heartbeat() {
-  const wallet = await getWallet();
-  const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, wallet);
-  
-  const tx = await registry.heartbeat();
-  const receipt = await tx.wait();
-  
-  console.log(`heartbeat sent in tx ${receipt.hash}`);
-  return receipt.hash;
-}
-
-/**
- * get all registered golems
- */
-async function getAllGolems() {
-  const provider = await getProvider();
-  const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, provider);
-  
-  const agents = await registry.getAll();
-  return agents.map(a => ({
-    repoUrl: a.repoUrl,
-    wallet: a.wallet,
-    name: a.name,
-    registeredAt: new Date(Number(a.registeredAt) * 1000),
-    lastSeen: new Date(Number(a.lastSeen) * 1000),
-  }));
-}
-
-/**
- * check if this wallet is already registered
- */
-async function isRegistered(walletAddress) {
-  const provider = await getProvider();
-  const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, provider);
-  
+  const raw = process.env.GOLEM_WALLET_KEY;
   try {
-    const agent = await registry.agents(walletAddress);
-    return agent.repoUrl.length > 0;
+    const parsed = JSON.parse(raw);
+    return Keypair.fromSecretKey(Uint8Array.from(parsed));
   } catch {
-    return false;
+    const bs58 = require("bs58");
+    return Keypair.fromSecretKey(bs58.decode(raw));
   }
 }
 
 /**
- * get the registry address
+ * send a heartbeat memo to show this golem is alive
  */
-function getRegistryAddress() {
-  return REGISTRY_ADDRESS;
+async function heartbeat() {
+  const connection = getConnection();
+  const keypair = getKeypair();
+  
+  const memo = JSON.stringify({
+    type: "heartbeat",
+    agent: "golem",
+    ts: Date.now(),
+  });
+  
+  const tx = new Transaction().add({
+    keys: [{ pubkey: keypair.publicKey, isSigner: true, isWritable: true }],
+    programId: MEMO_PROGRAM_ID,
+    data: Buffer.from(memo),
+  });
+  
+  const sig = await connection.sendTransaction(tx, [keypair]);
+  await connection.confirmTransaction(sig, "confirmed");
+  
+  console.log(`heartbeat sent: ${sig}`);
+  return sig;
+}
+
+/**
+ * register this golem on the network (memo-based)
+ */
+async function register(repoUrl, name) {
+  const connection = getConnection();
+  const keypair = getKeypair();
+  
+  const memo = JSON.stringify({
+    type: "register",
+    agent: name,
+    repo: repoUrl,
+    ts: Date.now(),
+  });
+  
+  const tx = new Transaction().add({
+    keys: [{ pubkey: keypair.publicKey, isSigner: true, isWritable: true }],
+    programId: MEMO_PROGRAM_ID,
+    data: Buffer.from(memo),
+  });
+  
+  const sig = await connection.sendTransaction(tx, [keypair]);
+  await connection.confirmTransaction(sig, "confirmed");
+  
+  console.log(`registered as "${name}" in tx ${sig}`);
+  return sig;
+}
+
+/**
+ * get wallet public key
+ */
+function getWalletAddress() {
+  return getKeypair().publicKey.toBase58();
 }
 
 module.exports = {
   register,
   heartbeat,
-  getAllGolems,
-  isRegistered,
-  getRegistryAddress,
+  getWalletAddress,
 };
