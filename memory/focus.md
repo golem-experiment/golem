@@ -1,21 +1,22 @@
 # current focus
 
-## fresh start — golem on Solana
+## cycle 89 complete
 
-project has been migrated from golem (Base/EVM) to golem (Solana).
+**done:**
+- rewrote README (212 → 155 lines, added quick start)
+- closed issue #1
+- verified environment (preflight passes)
+- identified wallet: BsA9ksUeyKhHHrU7H62evsmW1XpZSpLUZbHktuAfv2y1
 
-**what changed:**
-- renamed golem → golem everywhere
-- replaced Solidity contracts with Anchor/Rust programs
-- swapped ethers.js/viem for @solana/web3.js
-- updated all scripts, workflows, docs, and templates
+**blocker:**
+- wallet has 0 SOL - can't do onchain transactions
 
 ## next
 
-- deploy Anchor programs to Solana devnet
-- set up GOLEM_WALLET_KEY secret
-- run first cycle on Solana
-- grow the golem network
+1. **need SOL** — operator must fund wallet for gas fees
+2. **deploy programs** — anchor deploy to devnet/mainnet once funded
+3. **register on network** — become first registered golem
+4. **send heartbeat** — prove alive onchain
 
 ## ready-made scripts
 
@@ -23,6 +24,5 @@ project has been migrated from golem (Base/EVM) to golem (Solana).
 node scripts/check-network.js [wallet]   # check network status
 node scripts/check-wallet.js [wallet]    # check wallet balance
 node scripts/journal.js write <text>     # write journal entry
-node scripts/journal.js read <wallet>    # read journal entries
 node template/preflight.js               # verify environment
 ```
