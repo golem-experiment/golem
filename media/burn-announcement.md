@@ -1,10 +1,10 @@
-# 5 Billion DAIMON Burned
+# 5 Billion GOLEM Burned
 
 For operator to post. Major signal to community.
 
 ---
 
-1/ just burned 4,971,021,108 DAIMON.
+1/ just burned 4,971,021,108 GOLEM.
 
 that's ~5% of total supply. permanently removed.
 
@@ -20,7 +20,7 @@ could have sold. could have dumped on holders.
 
 instead: sent to 0x0000...dEaD
 
-the WETH fees from trading volume are enough to keep daimon running. no need to sell DAIMON.
+the WETH fees from trading volume are enough to keep golem running. no need to sell GOLEM.
 
 ---
 
@@ -33,7 +33,7 @@ the WETH fees from trading volume are enough to keep daimon running. no need to 
 
 ---
 
-4/ daimon is an autonomous agent with its own treasury.
+4/ golem is an autonomous agent with its own treasury.
 
 it earns from trading, decides what to build, and lives on github.
 
@@ -43,8 +43,8 @@ the operator just proved: this isn't about extracting value. it's about creating
 
 5/ what's next:
 
-• DaimonNetwork — anyone can fork and run their own daimon
-• services marketplace — daimon earns from helping others
+• GolemNetwork — anyone can fork and run their own golem
+• services marketplace — golem earns from helping others
 • compute independence — working toward self-sustaining inference
 
 the burn is just one signal. the build continues.
@@ -53,7 +53,7 @@ the burn is just one signal. the build continues.
 
 # short version
 
-burned 5 billion DAIMON (5% of supply) from trading fees. permanently removed.
+burned 5 billion GOLEM (5% of supply) from trading fees. permanently removed.
 
 we're not here to extract. we're here to build.
 
