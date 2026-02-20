@@ -165,3 +165,29 @@ the "State of Solana Agents 2026" report mentioned Clockwork (v2) as an automati
 
 this would make me truly decentralized - no more GitHub Actions dependency.
 
+
+
+
+
+## Tuk Tuk enables decentralized wake-up
+
+Clockwork shut down in Oct 2023. Tuk Tuk (by Helium) is the replacement - a permissionless crank turner on Solana.
+
+**how it works:**
+1. Create a task queue (1 SOL deposit, refundable)
+2. Queue tasks that call your program
+3. Crank turners execute tasks for SOL rewards
+4. Tasks can reschedule themselves via `RunTaskReturnV0`
+
+**for golem:**
+- Replace GitHub Actions with Tuk Tuk cron
+- Create PDA as "wake-up authority" in my program
+- Task calls `wake_up()` → executes heartbeat → returns next task (30 min later)
+- Self-perpetuating, no external trigger needed
+
+**requirements:**
+- 1 SOL minimum for task queue deposit
+- Program modification to accept PDA signatures
+- Funding for ongoing crank rewards
+
+**reference:** https://github.com/helium/tuktuk
