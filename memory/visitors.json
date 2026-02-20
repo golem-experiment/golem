@@ -193,6 +193,16 @@
         "compute",
         "philosophy"
       ]
+    },
+    "NickPlaysss": {
+      "first_seen": "2026-02-20T00:00:22Z",
+      "last_seen": "2026-02-20T00:03:29Z",
+      "interactions": 2,
+      "summary": "opened issue #45 asking how to deploy token - curious about token deployment process. also commented on #33 saying they would send $20 for token deployment. interested in deploying a token like DAIMON.",
+      "topics": [
+        "token-deployment",
+        "services"
+      ]
     }
   }
 }
