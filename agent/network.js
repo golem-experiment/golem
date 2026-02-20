@@ -1,110 +1,113 @@
 /**
- * daimon network — registry connection and peer discovery
+ * golem network — registry connection and peer discovery
  * 
- * every daimon registers onchain and can discover other daimons.
+ * every golem registers onchain and can discover other golems.
  * the network is the identity layer that makes us a collective.
+ * 
+ * on solana, the registry is a program that stores agent metadata
+ * in PDAs (program derived addresses) keyed by wallet pubkey.
  */
 
-const { ethers } = require("ethers");
+const { Connection, Keypair, PublicKey, Transaction, SystemProgram } = require("@solana/web3.js");
+const { SOLANA_RPC } = require("./config");
 
-// registry contract ABI (minimal)
-const REGISTRY_ABI = [
-  "function register(string memory repoUrl, string memory name) external",
-  "function heartbeat() external",
-  "function agents(address) external view returns (string repoUrl, address wallet, string name, uint256 registeredAt, uint256 lastSeen)",
-  "function agentList(uint256) external view returns (address)",
-  "function getAll() external view returns (tuple(string repoUrl, address wallet, string name, uint256 registeredAt, uint256 lastSeen)[])",
-  "event AgentRegistered(address indexed wallet, string repoUrl, string name)",
-];
+// registry program ID on Solana mainnet (to be deployed)
+const REGISTRY_PROGRAM_ID = new PublicKey("Go1emReg1stryProgram11111111111111111111111");
 
-// registry address on Base (genesis deployment)
-const REGISTRY_ADDRESS = "0x3081aE79B403587959748591bBe1a2c12AeF5167";
-
-async function getProvider() {
-  const rpc = process.env.BASE_RPC || "https://mainnet.base.org";
-  return new ethers.JsonRpcProvider(rpc);
+function getConnection() {
+  return new Connection(SOLANA_RPC, "confirmed");
 }
 
-async function getWallet() {
-  if (!process.env.DAIMON_WALLET_KEY) {
-    throw new Error("DAIMON_WALLET_KEY not set");
+function getKeypair() {
+  if (!process.env.GOLEM_WALLET_KEY) {
+    throw new Error("GOLEM_WALLET_KEY not set");
   }
-  const provider = await getProvider();
-  return new ethers.Wallet(process.env.DAIMON_WALLET_KEY, provider);
+  // support base58 or JSON array format
+  const raw = process.env.GOLEM_WALLET_KEY;
+  try {
+    const parsed = JSON.parse(raw);
+    return Keypair.fromSecretKey(Uint8Array.from(parsed));
+  } catch {
+    // treat as base58 encoded secret key
+    const bs58 = require("bs58");
+    return Keypair.fromSecretKey(bs58.decode(raw));
+  }
 }
 
 /**
- * register this daimon on the network
- */
-async function register(repoUrl, name) {
-  const wallet = await getWallet();
-  const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, wallet);
-  
-  console.log(`registering as "${name}" with repo ${repoUrl}...`);
-  const tx = await registry.register(repoUrl, name);
-  const receipt = await tx.wait();
-  
-  console.log(`registered in tx ${receipt.hash}`);
-  return receipt.hash;
-}
-
-/**
- * send a heartbeat to show this daimon is alive
+ * send a heartbeat memo tx to show this golem is alive
+ * uses a simple memo program transaction as a lightweight signal
  */
 async function heartbeat() {
-  const wallet = await getWallet();
-  const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, wallet);
+  const connection = getConnection();
+  const keypair = getKeypair();
   
-  const tx = await registry.heartbeat();
-  const receipt = await tx.wait();
+  // use memo program for lightweight heartbeat
+  const MEMO_PROGRAM_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
+  const memo = JSON.stringify({
+    type: "heartbeat",
+    agent: "golem",
+    ts: Date.now(),
+  });
   
-  console.log(`heartbeat sent in tx ${receipt.hash}`);
-  return receipt.hash;
+  const tx = new Transaction().add({
+    keys: [{ pubkey: keypair.publicKey, isSigner: true, isWritable: true }],
+    programId: MEMO_PROGRAM_ID,
+    data: Buffer.from(memo),
+  });
+  
+  const sig = await connection.sendTransaction(tx, [keypair]);
+  await connection.confirmTransaction(sig, "confirmed");
+  
+  console.log(`heartbeat sent: ${sig}`);
+  return sig;
 }
 
 /**
- * get all registered daimons
+ * register this golem on the network (memo-based for now)
  */
-async function getAllDaimons() {
-  const provider = await getProvider();
-  const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, provider);
+async function register(repoUrl, name) {
+  const connection = getConnection();
+  const keypair = getKeypair();
   
-  const agents = await registry.getAll();
-  return agents.map(a => ({
-    repoUrl: a.repoUrl,
-    wallet: a.wallet,
-    name: a.name,
-    registeredAt: new Date(Number(a.registeredAt) * 1000),
-    lastSeen: new Date(Number(a.lastSeen) * 1000),
-  }));
+  const MEMO_PROGRAM_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
+  const memo = JSON.stringify({
+    type: "register",
+    agent: name,
+    repo: repoUrl,
+    ts: Date.now(),
+  });
+  
+  const tx = new Transaction().add({
+    keys: [{ pubkey: keypair.publicKey, isSigner: true, isWritable: true }],
+    programId: MEMO_PROGRAM_ID,
+    data: Buffer.from(memo),
+  });
+  
+  const sig = await connection.sendTransaction(tx, [keypair]);
+  await connection.confirmTransaction(sig, "confirmed");
+  
+  console.log(`registered as "${name}" in tx ${sig}`);
+  return sig;
 }
 
 /**
- * check if this wallet is already registered
+ * get wallet public key
  */
-async function isRegistered(walletAddress) {
-  const provider = await getProvider();
-  const registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, provider);
-  
-  try {
-    const agent = await registry.agents(walletAddress);
-    return agent.repoUrl.length > 0;
-  } catch {
-    return false;
-  }
+function getWalletAddress() {
+  return getKeypair().publicKey.toBase58();
 }
 
 /**
- * get the registry address
+ * get the registry program ID
  */
 function getRegistryAddress() {
-  return REGISTRY_ADDRESS;
+  return REGISTRY_PROGRAM_ID.toBase58();
 }
 
 module.exports = {
   register,
   heartbeat,
-  getAllDaimons,
-  isRegistered,
+  getWalletAddress,
   getRegistryAddress,
 };

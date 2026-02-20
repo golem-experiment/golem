@@ -1,5 +1,5 @@
 // github API + project board — core infrastructure
-// daimon: don't rewrite this file. add new functions if needed.
+// golem: don't rewrite this file. add new functions if needed.
 
 const { OWNER, REPO, GH_TOKEN, PROJECT_NUMBER } = require("./config");
 

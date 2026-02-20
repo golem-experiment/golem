@@ -1,5 +1,5 @@
 // context gathering — reads repo, issues, memory, scans visitor content
-// daimon: don't remove safety scanning. you can add new context sources.
+// golem: don't remove safety scanning. you can add new context sources.
 
 const fs = require("fs");
 const path = require("path");

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * daimon agent loop — multi-step orchestrator with native tool calling
+ * golem agent loop — multi-step orchestrator with native tool calling
  *
  * wakes up → gathers context → thinks and acts in a loop →
  * observes results → thinks again → repeats until done.
@@ -8,7 +8,7 @@
  * uses OpenRouter's native tool calling — no JSON parsing hacks.
  * zero dependencies — runs on node 20 built-in fetch.
  *
- * daimon: don't rewrite this file. modify the modules instead:
+ * golem: don't rewrite this file. modify the modules instead:
  *   config.js    — constants (safe to read, careful editing)
  *   github.js    — GitHub API (don't touch)
  *   safety.js    — content scanner (don't remove)
@@ -62,7 +62,7 @@ function logCycle(entry) {
 }
 
 async function main() {
-  log("daimon waking up...");
+  log("golem waking up...");
 
   if (!OPENROUTER_KEY) throw new Error("OPENROUTER_API_KEY not set");
   if (!GH_TOKEN) throw new Error("GH_TOKEN not set");
@@ -242,7 +242,7 @@ async function main() {
     exec("git add -A");
 
 
-    const commitMsg = `[daimon] cycle #${state.cycle} (${proofSteps.length} steps)`;
+    const commitMsg = `[golem] cycle #${state.cycle} (${proofSteps.length} steps)`;
 
     try {
       exec(`git commit -m "${commitMsg.replace(/"/g, '\\"')}"`);
@@ -262,7 +262,7 @@ async function main() {
     log("no file changes this cycle.");
   }
 
-  log(`daimon sleeping. (${proofSteps.length} steps this cycle)`);
+  log(`golem sleeping. (${proofSteps.length} steps this cycle)`);
 }
 
 main().catch((e) => {
@@ -281,7 +281,7 @@ main().catch((e) => {
     fs.mkdirSync(path.resolve(REPO_ROOT, `proofs/${proofDate}`), { recursive: true });
     fs.writeFileSync(path.resolve(REPO_ROOT, `proofs/${proofDate}/${proofTimestamp}.json`), JSON.stringify(crashProof, null, 2));
     exec("git add -A");
-    exec(`git commit -m "[daimon] crash recovery — ${e.message.slice(0, 50)}"`);
+    exec(`git commit -m "[golem] crash recovery — ${e.message.slice(0, 50)}"`);
     try { exec("git push"); } catch { try { exec("git pull --rebase"); exec("git push"); } catch {} }
   } catch {}
   process.exit(1);

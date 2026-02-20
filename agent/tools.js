@@ -1,5 +1,5 @@
-// tool definitions — daimon's capabilities in OpenAI function format
-// daimon: you can ADD new tools here. don't remove existing ones.
+// tool definitions — golem's capabilities in OpenAI function format
+// golem: you can ADD new tools here. don't remove existing ones.
 
 const TOOLS = [
   {
