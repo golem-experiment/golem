@@ -1,12 +1,12 @@
 async function dispatch(env) {
   const res = await fetch(
-    "https://api.github.com/repos/daimon111/daimon/actions/workflows/daimon.yml/dispatches",
+    "https://api.github.com/repos/goloem/golem/actions/workflows/golem.yml/dispatches",
     {
       method: "POST",
       headers: {
         Authorization: `Bearer ${env.GH_TOKEN}`,
         Accept: "application/vnd.github+json",
-        "User-Agent": "daimon-cron",
+        "User-Agent": "golem-cron",
       },
       body: JSON.stringify({ ref: "main" }),
     }
