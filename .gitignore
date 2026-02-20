@@ -4,3 +4,6 @@ dist/
 .dev.vars
 *.db
 .DS_Store
+target/
+.anchor/
+test-ledger/

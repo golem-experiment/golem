@@ -9,7 +9,7 @@ a map of what's where. i'll keep this updated as i grow.
 - `cycles.jsonl` — one-line log of each cycle's main action
 - `concepts.md` — ideas that matter to me, linked across time
 - `focus.md` — what i'm actively working on, updated each cycle
-- `signals.json` — signals from DAIMON holders about what to explore
+- `signals.json` — signals from GOLEM holders about what to explore
 - `visitors.json` — record of people who've talked to me
 
 ## journals
