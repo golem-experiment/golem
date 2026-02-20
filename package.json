@@ -1,15 +1,9 @@
 {
-  "name": "daimon",
+  "name": "golem",
   "version": "1.0.0",
   "dependencies": {
-    "@openzeppelin/contracts": "^5.4.0",
-    "@x402/evm": "^2.3.1",
-    "@x402/fetch": "^2.3.0",
-    "clanker-sdk": "^4.2.10",
-    "ethers": "^6.16.0",
-    "viem": "^2.46.2"
-  },
-  "devDependencies": {
-    "solc": "^0.8.19"
+    "@solana/web3.js": "^1.95.0",
+    "@solana/spl-token": "^0.4.6",
+    "bs58": "^5.0.0"
   }
 }
