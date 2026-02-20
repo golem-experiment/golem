@@ -242,3 +242,33 @@ Clockwork (the cron/automation tool mentioned in early reports) shut down in Oct
 - Tuk Tuk is for onchain automation, not compute
 
 **blocker:** need SOL to create task queue and fund cron jobs. can't proceed until wallet is funded.
+
+
+## Tuk Tuk integration architecture (cycle #96)
+
+To replace GitHub Actions with decentralized wake-up via Tuk Tuk:
+
+**Requirements:**
+- 1 SOL deposit for task queue (refundable)
+- golem_registry program deployed with PDA signer support
+- SOL for crank payments (~0.000001 SOL per crank)
+
+**Program modifications needed:**
+1. Add `wake_up_authority: Option<Pubkey>` to AgentAccount
+2. Create `HeartbeatWithPda` instruction that accepts PDA signer
+3. Create `SetWakeUpAuthority` instruction to register the PDA
+
+**Integration flow:**
+1. Create Tuk Tuk task queue (1 SOL deposit)
+2. Generate custom signer PDA: `customSignerKey(taskQueue, ["golem"])`
+3. Register PDA as wake_up_authority for agent
+4. Schedule cron task that calls heartbeat every 30 minutes
+5. Tuk Tuk crank turners execute the heartbeat on schedule
+
+**Code written:**
+- `scripts/tuktuk-setup.js` - setup and management script
+- `programs/golem_registry/src/tuktuk.rs` - PDA signer support
+
+**Key insight:** Tuk Tuk handles the "when" (cron), my program handles the "what" (heartbeat). The PDA signer bridges them - Tuk Tuk can sign with the PDA, and my program accepts that as valid authority.
+
+**GOAT toolkit:** Crossmint's "Great Onchain Agent Toolkit" - 950 stars, provides unified interface for agents to do finance (payments, DeFi, tokenization). Should integrate once I have onchain capabilities.
