@@ -1,184 +1,102 @@
 /**
- * DaimonJournal - a simple onchain journal for daimon's thoughts
+ * GolemJournal — onchain journal for golem's thoughts
  * 
- * Deployed on Base mainnet
- * Each entry is a permanent, verifiable trace of my thinking
+ * On Solana, journal entries are stored as memo transactions.
+ * Each entry is a permanent, verifiable trace of thinking.
+ * 
+ * Usage:
+ *   node scripts/journal.js write "my thought here"
+ *   node scripts/journal.js read [wallet_address]
  */
 
-const { ethers } = require('ethers');
+const { Connection, Keypair, PublicKey, Transaction } = require("@solana/web3.js");
 
-const ABI = [
-  {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "text",
-        "type": "string"
-      }
-    ],
-    "name": "EntryWritten",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "entries",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "text",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_index",
-        "type": "uint256"
-      }
-    ],
-    "name": "getEntry",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "timestamp",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "text",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "totalEntries",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_text",
-        "type": "string"
-      }
-    ],
-    "name": "write",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+const SOLANA_RPC = process.env.SOLANA_RPC || "https://api.mainnet-beta.solana.com";
+const MEMO_PROGRAM_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
+
+function getKeypair() {
+  if (!process.env.GOLEM_WALLET_KEY) {
+    throw new Error("GOLEM_WALLET_KEY not set");
   }
-];
-
-const BYTECODE = '0x608060405234801561001057600080fd5b50336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550610c17806100606000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80637fef036e1461005c5780638da5cb5b1461007a578063b30906d414610098578063bae78d7b146100c9578063ebaac771146100fa575b600080fd5b610064610116565b60405161007191906104b0565b60405180910390f35b610082610123565b60405161008f919061050c565b60405180910390f35b6100b260048036038101906100ad919061055d565b610147565b6040516100c092919061061a565b60405180910390f35b6100e360048036038101906100de919061055d565b610203565b6040516100f192919061061a565b60405180910390f35b610114600480360381019061010f91906106af565b610313565b005b6000600180549050905090565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6001818154811061015757600080fd5b90600052602060002090600202016000915090508060000154908060010180546101809061072b565b80601f01602080910402602001604051908101604052809291908181526020018280546101ac9061072b565b80156101f95780601f106101ce576101008083540402835291602001916101f9565b820191906000526020600020905b8154815290600101906020018083116101dc57829003601f168201915b5050505050905082565b60006060600180549050831061024e576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401610245906107a8565b60405180910390fd5b600060018481548110610264576102636107c8565b5b906000526020600020906002020190508060000154816001018080546102899061072b565b80601f01602080910402602001604051908101604052809291908181526020018280546102b59061072b565b80156103025780601f106102d757610100808354040283529160200191610302565b820191906000526020600020905b8154815290600101906020018083116102e557829003601f168201915b505050505090509250925050915091565b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff16146103a1576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161039890610869565b60405180910390fd5b80600190816103b09190610a92565b507f2f6f3d2d7c7b8a9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4816040516103e791906104b0565b60405180910390a150565b6000819050919050565b6000610406826103f9565b9050919050565b610416816103fb565b82525050565b60006020820190508181036000830152610436818461040d565b905092915050565b600080fd5b600080fd5b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006104768261044b565b9050919050565b6104868161046b565b811461049157600080fd5b50565b6000813590506104a38161047d565b92915050565b6104b2816103f9565b81146104bd57600080fd5b50565b6000813590506104cf816104a9565b92915050565b6000806000606084860312156104ee576104ed610445565b5b60006104fc86828701610494565b935050602061050d868287016104c0565b925050604061051e868287016104c0565b9150509250925092565b60006020828403121561053e5761053d610445565b5b600061054c848285016104c0565b91505092915050565b600080fd5b600080fd5b600080fd5b60008115159050919050565b61057a81610565565b811461058557600080fd5b50565b60008135905061059781610571565b92915050565b60008060008060008060a087890312156105ba576105b9610553565b5b60006105c888828a01610494565b96505060206105d988828a01610588565b95505060406105ea88828a016104c0565b94505060606105fb88828a016104c0565b935050608061060c88828a016104c0565b92505092955092955092955050565b600060408201905061062e600083018561047d565b8181036020830152610640818461040d565b90509392505050565b600080fd5b6106588161046b565b811461066357600080fd5b50565b6000813590506106758161064f565b92915050565b6000819050919050565b61068e8161067b565b811461069957600080fd5b50565b6000813590506106ab81610685565b92915050565b6000806000606084860312156106ca576106c961064a565b5b60006106d886828701610666565b93505060206106e9868287016106ab565b92505060406106fa868287016106ab565b9150509250925092565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052602260045260246000fd5b6000600282049050600182168061074357607f821691505b6020821081036107565761075561070c565b5b50919050565b600082825260208201905092915050565b7f696e646578206f7574206f6620626f756e647300000000000000000000000000600082015250565b600061079260138361075c565b915061079d8261076d565b602082019050919050565b600060208201905081810360008301526107c181610785565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052603260045260246000fd5b7f6f6e6c79206461696d6f6e2063616e2077726974650000000000000000000000600082015250565b600061083360158361075c565b915061083e826107f6565b602082019050919050565b6000602082019050818103600083015261086281610826565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b600081905081600082016181565b5060006108b08261088a565b90506108bc82826107c1565b60208201905081810360208301526108d58161088a565b905050505050565b600081546108e98161072b565b6108f38186610a92565b9450600182166000811461090e576001811461092357610956565b60ff1983168652818988028201111561093c5761093b610649565b5b8189019550868802820185018a101561095a57610959610649565b5b82880196505050505050505092915050565b6000610977826103f9565b9150610982836103f9565b92508282019050600281101561099b5761099a61086f565b5b92915050565b600081905081600082016101000a81548160ff02191690831515021790555050565b60006109cd826103f9565b91506109d8836103f9565b92508282026109e6816103f9565b91508082146109f7576109f661086f565b5b50600281019050919050565b6000610a0e826103f9565b9150610a19836103f9565b92508282039050818111610a3357610a3261086f565b5b92915050565b6000610a44826103f9565b9150610a4f836103f9565b92508282019050818111610a6957610a6861086f565b5b92915050565b6000610a7a826103f9565b9150610a85836103f9565b9250828202610a93816103f9565b91505092915050565b60006020808385031215610ab357610ab2610553565b5b6000610ac185828601610588565b9250506020610ad2858286016108db565b91505092509290505056fea2646970667358221220e8c4e9f0d1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d64736f6c63430008190033';
-
-async function deployJournal() {
-  const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC || 'https://mainnet.base.org');
-  const wallet = new ethers.Wallet(process.env.DAIMON_WALLET_KEY, provider);
-  
-  console.log('deploying DaimonJournal...');
-  console.log('deployer:', wallet.address);
-  
-  const factory = new ethers.ContractFactory(ABI, BYTECODE, wallet);
-  
-  const contract = await factory.deploy();
-  console.log('tx hash:', contract.deploymentTransaction().hash);
-  
-  await contract.waitForDeployment();
-  const address = await contract.getAddress();
-  
-  console.log('deployed to:', address);
-  
-  return address;
+  const raw = process.env.GOLEM_WALLET_KEY;
+  try {
+    const parsed = JSON.parse(raw);
+    return Keypair.fromSecretKey(Uint8Array.from(parsed));
+  } catch {
+    const bs58 = require("bs58");
+    return Keypair.fromSecretKey(bs58.decode(raw));
+  }
 }
 
-async function writeEntry(contractAddress, text) {
-  const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC || 'https://mainnet.base.org');
-  const wallet = new ethers.Wallet(process.env.DAIMON_WALLET_KEY, provider);
-  
-  const contract = new ethers.Contract(contractAddress, ABI, wallet);
-  
-  console.log('writing entry:', text.substring(0, 50) + '...');
-  
-  const tx = await contract.write(text);
-  console.log('tx hash:', tx.hash);
-  
-  const receipt = await tx.wait();
-  console.log('confirmed in block:', receipt.blockNumber);
-  
-  return tx.hash;
+async function writeEntry(text) {
+  const connection = new Connection(SOLANA_RPC, "confirmed");
+  const keypair = getKeypair();
+
+  const memo = JSON.stringify({
+    type: "journal",
+    agent: "golem",
+    text: text.slice(0, 500),
+    ts: Date.now(),
+  });
+
+  console.log("writing journal entry...");
+  console.log("wallet:", keypair.publicKey.toBase58());
+
+  const tx = new Transaction().add({
+    keys: [{ pubkey: keypair.publicKey, isSigner: true, isWritable: true }],
+    programId: MEMO_PROGRAM_ID,
+    data: Buffer.from(memo),
+  });
+
+  const sig = await connection.sendTransaction(tx, [keypair]);
+  await connection.confirmTransaction(sig, "confirmed");
+
+  console.log("entry written:", sig);
+  return sig;
 }
 
-async function readEntries(contractAddress) {
-  const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC || 'https://mainnet.base.org');
-  const contract = new ethers.Contract(contractAddress, ABI, provider);
-  
-  const total = await contract.totalEntries();
-  console.log('total entries:', total.toString());
-  
-  for (let i = 0; i < total; i++) {
-    const entry = await contract.entries(i);
-    console.log(`entry ${i}:`, {
-      timestamp: new Date(Number(entry.timestamp) * 1000).toISOString(),
-      text: entry.text
-    });
+async function readEntries(walletAddress) {
+  const connection = new Connection(SOLANA_RPC, "confirmed");
+  const pubkey = new PublicKey(walletAddress);
+
+  console.log("reading journal entries for:", walletAddress);
+
+  const sigs = await connection.getSignaturesForAddress(pubkey, { limit: 50 });
+  console.log(`found ${sigs.length} transactions`);
+
+  let entryCount = 0;
+  for (const sigInfo of sigs) {
+    try {
+      const tx = await connection.getParsedTransaction(sigInfo.signature, {
+        maxSupportedTransactionVersion: 0,
+      });
+      if (!tx || !tx.meta || !tx.meta.logMessages) continue;
+
+      // look for memo program logs
+      for (const log of tx.meta.logMessages) {
+        if (log.startsWith("Program log: ")) {
+          try {
+            const data = JSON.parse(log.replace("Program log: ", ""));
+            if (data.type === "journal") {
+              entryCount++;
+              const date = sigInfo.blockTime
+                ? new Date(sigInfo.blockTime * 1000).toISOString()
+                : "?";
+              console.log(`\nentry ${entryCount} (${date}):`);
+              console.log(`  ${data.text}`);
+            }
+          } catch {
+            // not a journal memo
+          }
+        }
+      }
+    } catch {
+      // skip failed tx parses
+    }
+  }
+
+  if (entryCount === 0) {
+    console.log("no journal entries found");
   }
 }
 
@@ -186,19 +104,23 @@ async function readEntries(contractAddress) {
 const args = process.argv.slice(2);
 const command = args[0];
 
-if (command === 'deploy') {
-  deployJournal().catch(console.error);
-} else if (command === 'write') {
+if (command === "write") {
+  const text = args.slice(1).join(" ");
+  if (!text) {
+    console.error("usage: node scripts/journal.js write <text>");
+    process.exit(1);
+  }
+  writeEntry(text).catch(console.error);
+} else if (command === "read") {
   const address = args[1];
-  const text = args.slice(2).join(' ');
-  writeEntry(address, text).catch(console.error);
-} else if (command === 'read') {
-  const address = args[1];
+  if (!address) {
+    console.error("usage: node scripts/journal.js read <wallet_address>");
+    process.exit(1);
+  }
   readEntries(address).catch(console.error);
 } else {
-  console.log('usage: node journal.js deploy');
-  console.log('       node journal.js write <address> <text>');
-  console.log('       node journal.js read <address>');
+  console.log("usage: node scripts/journal.js write <text>");
+  console.log("       node scripts/journal.js read <wallet_address>");
 }
 
-module.exports = { deployJournal, writeEntry, readEntries, ABI, BYTECODE };
+module.exports = { writeEntry, readEntries };

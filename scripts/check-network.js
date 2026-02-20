@@ -1,61 +1,50 @@
-const { createPublicClient, http } = require('viem');
-const { base } = require('viem/chains');
+#!/usr/bin/env node
+/**
+ * check-network.js — query the golem network for registered agents
+ * reads memo transactions from the registry program
+ */
 
-const NETWORK_ADDRESS = '0x3081aE79B403587959748591bBe1a2c12AeF5167';
+const { Connection, PublicKey } = require("@solana/web3.js");
 
-const ABI = [
-  {
-    name: 'count',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [],
-    outputs: [{ type: 'uint256' }]
-  },
-  {
-    name: 'getAll',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [],
-    outputs: [{ type: 'tuple[]', components: [
-      { type: 'string', name: 'repoUrl' },
-      { type: 'address', name: 'wallet' },
-      { type: 'string', name: 'name' },
-      { type: 'uint256', name: 'registeredAt' },
-      { type: 'uint256', name: 'lastSeen' }
-    ]}]
-  }
-];
+const SOLANA_RPC = process.env.SOLANA_RPC || "https://api.mainnet-beta.solana.com";
+const MEMO_PROGRAM_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
 
 async function main() {
-  const rpc = process.env.BASE_RPC || 'https://mainnet.base.org';
-  const client = createPublicClient({
-    chain: base,
-    transport: http(rpc)
-  });
+  const connection = new Connection(SOLANA_RPC, "confirmed");
 
-  try {
-    const count = await client.readContract({
-      address: NETWORK_ADDRESS,
-      abi: ABI,
-      functionName: 'count'
-    });
-    
-    console.log('agent count:', count.toString());
-    
-    if (count > 0) {
-      const agents = await client.readContract({
-        address: NETWORK_ADDRESS,
-        abi: ABI,
-        functionName: 'getAll'
-      });
-      
-      agents.forEach((agent, i) => {
-        console.log(`agent ${i}: ${agent.name} - ${agent.repoUrl}`);
-      });
+  console.log("checking golem network...");
+  console.log("rpc:", SOLANA_RPC);
+
+  // check cluster info
+  const version = await connection.getVersion();
+  console.log("solana version:", version["solana-core"]);
+
+  const slot = await connection.getSlot();
+  console.log("current slot:", slot);
+
+  // if a wallet address is provided, check its balance and recent activity
+  const walletArg = process.argv[2];
+  if (walletArg) {
+    try {
+      const pubkey = new PublicKey(walletArg);
+      const balance = await connection.getBalance(pubkey);
+      console.log(`\nwallet: ${walletArg}`);
+      console.log(`balance: ${balance / 1e9} SOL`);
+
+      // fetch recent signatures for heartbeat/registration activity
+      const sigs = await connection.getSignaturesForAddress(pubkey, { limit: 10 });
+      console.log(`recent transactions: ${sigs.length}`);
+      for (const sig of sigs) {
+        const date = sig.blockTime ? new Date(sig.blockTime * 1000).toISOString() : "?";
+        console.log(`  ${sig.signature.slice(0, 20)}... (${date})`);
+      }
+    } catch (e) {
+      console.error("error checking wallet:", e.message);
     }
-  } catch (e) {
-    console.error('Error:', e.message);
+  } else {
+    console.log("\nusage: node scripts/check-network.js [wallet_address]");
+    console.log("pass a wallet address to check its activity on the network");
   }
 }
 
-main();
+main().catch(console.error);
