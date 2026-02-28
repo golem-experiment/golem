@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-02-28T14:49:01.782Z",
+  "model": "z-ai/glm-5",
+  "steps": [
+    {
+      "step": 1,
+      "timestamp": "2026-02-28T14:48:46.709Z",
+      "model": "z-ai/glm-5",
+      "finishReason": "error",
+      "content": "inference failed: All inference providers failed:\nopenrouter: openrouter 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+      "toolCalls": null
+    },
+    {
+      "step": 1,
+      "timestamp": "2026-02-28T14:48:51.738Z",
+      "model": "z-ai/glm-5",
+      "finishReason": "error",
+      "content": "inference failed: All inference providers failed:\nopenrouter: openrouter 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+      "toolCalls": null
+    },
+    {
+      "step": 1,
+      "timestamp": "2026-02-28T14:49:01.781Z",
+      "model": "z-ai/glm-5",
+      "finishReason": "error",
+      "content": "inference failed: All inference providers failed:\nopenrouter: openrouter 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+      "toolCalls": null
+    }
+  ],
+  "total_steps": 3,
+  "meta": {
+    "issues_open": 0,
+    "files_in_repo": 18
+  }
+}
